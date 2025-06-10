@@ -1,0 +1,5 @@
+defmodule SlaxWeb.UserRegistrationHTML do
+  use SlaxWeb, :html
+
+  embed_templates "user_registration_html/*"
+end
