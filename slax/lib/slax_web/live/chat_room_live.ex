@@ -4,8 +4,8 @@ defmodule SlaxWeb.ChatRoomLive do
   alias Slax.Accounts
   alias Slax.Accounts.User
   alias Slax.Chat
-  alias Slax.Chat.Room
   alias Slax.Chat.Message
+  alias Slax.Chat.Room
   alias SlaxWeb.OnlineUsers
 
   def render(assigns) do

@@ -1,7 +1,7 @@
 defmodule Slax.Chat do
   alias Slax.Accounts.User
-  alias Slax.Chat.Room
   alias Slax.Chat.Message
+  alias Slax.Chat.Room
   alias Slax.Repo
 
   import Ecto.Query
