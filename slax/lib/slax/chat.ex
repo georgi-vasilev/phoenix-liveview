@@ -98,6 +98,30 @@ defmodule Slax.Chat do
     |> Repo.all()
   end
 
+  def list_joined_rooms_with_unread_count(%User{} = user) do
+    from(room in Room,
+      join: membership in assoc(room, :memberships),
+      where: membership.user_id == ^user.id,
+      left_join: message in assoc(room, :messages),
+      on: message.inserted_at > membership.last_read_at,
+      group_by: room.id,
+      select: {room, count(message.id)},
+      order_by: [asc: room.name]
+    )
+    |> Repo.all()
+  end
+
+  def unread_message_count(%Room{} = room, %User{} = user) do
+    from(room in Room,
+      where: room.id == ^room.id,
+      join: membership in assoc(room, :memberships),
+      where: membership.user_id == ^user.id,
+      join: message in assoc(room, :messages),
+      on: message.inserted_at > membership.last_read_at
+    )
+    |> Repo.aggregate(:count)
+  end
+
   def change_message(message, attrs \\ %{}) do
     Message.changeset(message, attrs)
   end
