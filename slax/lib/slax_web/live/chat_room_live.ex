@@ -334,12 +334,16 @@ defmodule SlaxWeb.ChatRoomLive do
     %{current_user: current_user, room: room} = socket.assigns
 
     socket =
-      case Chat.create_message(room, message_params, current_user) do
-        {:ok, _message} ->
-          assign_message_form(socket, Chat.change_message(%Message{}))
+      if Chat.joined?(room, current_user) do
+        case Chat.create_message(room, message_params, current_user) do
+          {:ok, _message} ->
+            assign_message_form(socket, Chat.change_message(%Message{}))
 
-        {:error, changeset} ->
-          assign_message_form(socket, changeset)
+          {:error, changeset} ->
+            assign_message_form(socket, changeset)
+        end
+      else
+        socket
       end
 
     {:noreply, socket}
