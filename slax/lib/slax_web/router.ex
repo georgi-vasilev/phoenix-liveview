@@ -3,7 +3,6 @@ defmodule SlaxWeb.Router do
 
   import SlaxWeb.UserAuth
 
-  alias SlaxWeb.RoomsController
 
   pipeline :browser do
     plug :accepts, ["html"]
