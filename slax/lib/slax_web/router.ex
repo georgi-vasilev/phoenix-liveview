@@ -3,6 +3,8 @@ defmodule SlaxWeb.Router do
 
   import SlaxWeb.UserAuth
 
+  alias SlaxWeb.RoomsController
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -58,9 +60,10 @@ defmodule SlaxWeb.Router do
   scope "/", SlaxWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    get "/", RoomController, :redirect_to_first
+
     live_session :require_authenticated_user,
       on_mount: [{SlaxWeb.UserAuth, :ensure_authenticated}] do
-      live "/", ChatRoomLive
       live "/rooms", ChatRoomLive.Index
       live "/rooms/:id", ChatRoomLive
       live "/rooms/:id/edit", ChatRoomLive.Edit
