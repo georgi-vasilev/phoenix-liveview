@@ -3,7 +3,6 @@ defmodule SlaxWeb.Router do
 
   import SlaxWeb.UserAuth
 
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -73,7 +72,7 @@ defmodule SlaxWeb.Router do
   end
 
   scope "/", SlaxWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :require_authenticated_user]
 
     delete "/users/log_out", UserSessionController, :delete
 
@@ -82,5 +81,11 @@ defmodule SlaxWeb.Router do
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
+  end
+
+  scope "/", SlaxWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/home", PageController, :home
   end
 end
