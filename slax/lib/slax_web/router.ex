@@ -82,10 +82,4 @@ defmodule SlaxWeb.Router do
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
   end
-
-  scope "/", SlaxWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-
-    get "/home", PageController, :home
-  end
 end
