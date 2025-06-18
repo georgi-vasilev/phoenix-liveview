@@ -1,6 +1,8 @@
 defmodule SlaxWeb.ChatRoomLive.ProfileComponent do
   use SlaxWeb, :live_component
 
+  import SlaxWeb.UserComponents
+
   def render(assigns) do
     ~H"""
     <div class="flex flex-col shrink-0 w-1/4 max-w-xs bg-white shadow-xl">
@@ -19,7 +21,7 @@ defmodule SlaxWeb.ChatRoomLive.ProfileComponent do
       </div>
       <div class="flex flex-col grow overflow-auto p-4">
         <div class="mb-4">
-          <img src={user_avatar_path(@user)} class="w-48 rounded mx-auto" />
+          <.user_avatar user={@user} class="w-48 rounded mx-auto" />
         </div>
         <h2 class="text-xl font-bold text-gray-800">
           {@user.username}
@@ -27,13 +29,5 @@ defmodule SlaxWeb.ChatRoomLive.ProfileComponent do
       </div>
     </div>
     """
-  end
-
-  defp user_avatar_path(user) do
-    if user.avatar_path do
-      ~p"/uploads/#{user.avatar_path}"
-    else
-      ~p"/images/one_ring.jpg"
-    end
   end
 end
