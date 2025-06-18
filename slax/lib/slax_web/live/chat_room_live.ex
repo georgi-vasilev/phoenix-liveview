@@ -316,13 +316,6 @@ defmodule SlaxWeb.ChatRoomLive do
     """
   end
 
-  defp message_timestamp(message, timezone) do
-    message.inserted_at
-    |> Timex.Timezone.convert(Timex.Timezone.local())
-    |> Timex.Timezone.convert(timezone)
-    |> Timex.format!("%-l:%M %p", :strftime)
-  end
-
   attr :active, :boolean, required: true
   attr :room, Room, required: true
   attr :unread_count, :integer, required: true
