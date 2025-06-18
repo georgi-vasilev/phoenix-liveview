@@ -13,6 +13,8 @@ defmodule Slax.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
 
+    field :avatar_path, :string
+
     many_to_many :rooms, Room, join_through: RoomMembership
 
     timestamps(type: :utc_datetime)
@@ -46,6 +48,11 @@ defmodule Slax.Accounts.User do
     |> cast(attrs, [:email, :username, :password])
     |> validate_email(opts)
     |> validate_password(opts)
+  end
+
+  def avatar_changeset(user, attrs \\ %{}) do
+    user
+    |> cast(attrs, [:avatar_path])
   end
 
   defp validate_username(changeset, opts) do
