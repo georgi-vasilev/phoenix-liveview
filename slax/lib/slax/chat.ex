@@ -122,6 +122,13 @@ defmodule Slax.Chat do
     |> Repo.aggregate(:count)
   end
 
+  def get_message!(id) do
+    Message
+    |> where([m], m.id == ^id)
+    |> preload(:user)
+    |> Repo.one!()
+  end
+
   def change_message(message, attrs \\ %{}) do
     Message.changeset(message, attrs)
   end
