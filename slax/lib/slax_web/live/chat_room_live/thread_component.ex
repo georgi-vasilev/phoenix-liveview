@@ -61,7 +61,7 @@ defmodule SlaxWeb.ChatRoomLive.ThreadComponent do
                 id="thread-message-textarea"
                 name={@form[:body].name}
                 phx-debounce
-                phx-hooks="ChatMessageTextarea"
+                phx-hook="ChatMessageTextarea"
                 placeholder="Reply…"
                 rows="1"
               >{Phoenix.HTML.Form.normalize_value("textarea", @form[:body].value)}</textarea>
