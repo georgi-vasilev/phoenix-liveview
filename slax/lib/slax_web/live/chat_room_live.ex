@@ -563,6 +563,22 @@ defmodule SlaxWeb.ChatRoomLive do
     |> reply(%{can_load_more: !is_nil(page.metadata.after)})
   end
 
+  def handle_event("add-reaction", %{"emoji" => emoji, "message_id" => message_id}, socket) do
+    message = Chat.get_message!(message_id)
+
+    Chat.add_reaction(emoji, message, socket.assigns.current_user)
+
+    {:noreply, socket}
+  end
+
+  def handle_event("remove-reaction", %{"message_id" => message_id, "emoji" => emoji}, socket) do
+    message = Chat.get_message!(message_id)
+
+    Chat.remove_reaction(emoji, message, socket.assigns.current_user)
+
+    {:noreply, socket}
+  end
+
   def handle_info({:new_message, message}, socket) do
     room = socket.assigns.room
 
@@ -621,6 +637,22 @@ defmodule SlaxWeb.ChatRoomLive do
     |> maybe_update_profile(user)
     |> maybe_update_current_user(user)
     |> push_event("update_avatar", %{user_id: user.id, avatar_path: user.avatar_path})
+    |> noreply()
+  end
+
+  def handle_info({:added_reaction, reaction}, socket) do
+    message = Chat.get_message!(reaction.message_id)
+
+    socket
+    |> refresh_message(message)
+    |> noreply()
+  end
+
+  def handle_info({:removed_reaction, reaction}, socket) do
+    message = Chat.get_message!(reaction.message_id)
+
+    socket
+    |> refresh_message(message)
     |> noreply()
   end
 
