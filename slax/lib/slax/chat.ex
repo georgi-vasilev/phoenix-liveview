@@ -150,12 +150,24 @@ defmodule Slax.Chat do
     end
   end
 
-  def delete_message(id, %User{id: user_id}) do
+  def delete_message_by_id(id, %User{id: user_id}) do
     message = Repo.get_by!(Message, id: id, user_id: user_id)
 
     Repo.delete(message)
 
-    Phoenix.PubSub.broadcast!(@pubsub, topic(message.room_id), {:message_deleted, message})
+    Phoenix.PubSub.broadcast!(@pubsub, topic(message.room_id), {:deleted_message, message})
+  end
+
+  def delete_reply_by_id(id, %User{id: user_id}) do
+    with %Reply{} = reply <-
+           from(r in Reply, where: r.id == ^id and r.user_id == ^user_id)
+           |> Repo.one() do
+      Repo.delete(reply)
+
+      message = get_message!(reply.message_id)
+
+      Phoenix.PubSub.broadcast!(@pubsub, topic(message.room_id), {:deleted_reply, message})
+    end
   end
 
   def subscribe_to_room(room) do
