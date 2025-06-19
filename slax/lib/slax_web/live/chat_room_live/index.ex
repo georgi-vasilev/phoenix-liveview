@@ -108,10 +108,6 @@ defmodule SlaxWeb.ChatRoomLive.Index do
     """
   end
 
-  defp open_room(room) do
-    JS.navigate(~p"/rooms/#{room}")
-  end
-
   attr :number, :any, required: true
   attr :current?, :boolean, default: false
 
