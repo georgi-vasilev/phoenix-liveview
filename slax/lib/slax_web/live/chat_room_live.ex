@@ -228,6 +228,7 @@ defmodule SlaxWeb.ChatRoomLive do
         id="thread"
         module={ThreadComponent}
         current_user={@current_user}
+        joined?={@joined?}
         message={@thread}
         room={@room}
         timezone={@timezone}
@@ -567,17 +568,14 @@ defmodule SlaxWeb.ChatRoomLive do
   end
 
   def handle_info({:deleted_reply, message}, socket) do
-    if message.room_id == socket.assign.room.id do
-      socket = stream_insert(socket, :messages, message)
+    socket
+    |> refresh_message(message)
+    |> noreply()
+  end
 
-      if socket.assigns[:thread] && socket.assigns.thread.id == message.id do
-        assign(socket, :thread, message)
-      else
-        socket
-      end
-    else
-      socket
-    end
+  def handle_info({:new_reply, message}, socket) do
+    socket
+    |> refresh_message(message)
     |> noreply()
   end
 
@@ -593,6 +591,20 @@ defmodule SlaxWeb.ChatRoomLive do
     |> maybe_update_current_user(user)
     |> push_event("update_avatar", %{user_id: user.id, avatar_path: user.avatar_path})
     |> noreply()
+  end
+
+  defp refresh_message(socket, message) do
+    if message.room_id == socket.assigns.room.id do
+      socket = stream_insert(socket, :messages, message)
+
+      if socket.assigns[:thread] && socket.assigns.thread.id == message.id do
+        assign(socket, :thread, message)
+      else
+        socket
+      end
+    else
+      socket
+    end
   end
 
   defp maybe_update_current_user(socket, user) do
